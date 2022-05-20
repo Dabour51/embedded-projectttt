@@ -44,8 +44,4 @@ void timer(int x){
             minutes1--;
             minutes2=9;
         }
-    if(minutes1==0 &&minutes2==0 && seconds1==0 &&seconds2== -1)
-			break;
-		}
-
 			}

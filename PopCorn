@@ -1,0 +1,12 @@
+int popcorn_cooking(){
+	while(1){
+	LCD_String("    Popcorn");
+		delay_milli(2000);
+	 lcd_4bits_cmd(0x1);
+	 timer(100);
+	break;
+	}
+	return(0);
+
+
+}

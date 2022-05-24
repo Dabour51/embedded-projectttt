@@ -1,7 +1,7 @@
 int beef_cooking(){
 	char value,weight;
 	int time;
-L2:	LCD_String("Beef Weight?    (1 to 9)");
+L2:	LCD_String("Beef Weight?    (1 to 9)");\\print beef weight
 		delay_milli(2000);
 	 lcd_4bits_cmd(0x1);
 	 lcd_4bits_cmd(0x80);
@@ -19,7 +19,7 @@ L2:	LCD_String("Beef Weight?    (1 to 9)");
 		 
 	weight = weight -48;
 	if((weight >0) && (weight <10) && (weight %2 ==0)){
-time = weight * 50;
+time = weight * 50; \\calculating time  to be displayed 
 	 timer(time);
 	 }
 	else if ((weight >0) && (weight <10) && (weight %2 !=0)){
@@ -27,7 +27,7 @@ time = weight * 50;
 			timer(time);
  }
 	else {
-			LCD_String("        Err");
+			LCD_String("        Err");\\handling eror 
 		  delay_milli(2000);
 	   lcd_4bits_cmd(0x1);
 	   lcd_4bits_cmd(0x80);

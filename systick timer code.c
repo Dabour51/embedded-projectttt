@@ -3,14 +3,13 @@ NVIC_ST_CTRL_R = 0;
 NVIC_ST_RELOAD_R = delay-1;
 NVIC_ST_CURRENT_R =0;
 NVIC_ST_CTRL_R = 0x00000005;
-while ((NVIC_ST_CTRL_R &0x00010000)==0){
-}
+while ((NVIC_ST_CTRL_R &0x00010000)==0);
 }
 
 
 void delay(unsigned long time ){
 int i;
 for(i =0 ; i<time ;i++){
-SysTick_wait(16000); // delay for 1msec
+SysTick_wait(16000);
 }
 }

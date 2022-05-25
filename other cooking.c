@@ -45,9 +45,20 @@ lcd_4bits_data(time[i-1]);
  else if ((sw12 & 0x01) == 0x00){
  lcd_4bits_cmd(0x1);
  delay(100);
- countdown = atoi(time);
+if(countdown > 3000){
+	lcd_4bits_cmd(0x1);
+ delay(100);
+ LCD_String(" Err");
+	lcd_4bits_cmd(0xc0);
+	LCD_String("more than 30mins");
+ delay(2000);
+ lcd_4bits_cmd(0x1);
+ goto L3;
+	}
+	else{
  timer(countdown);
  return;
+	}
 }
  else if((value < '0') | (value > '9')){
  lcd_4bits_cmd(0x1);

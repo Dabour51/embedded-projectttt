@@ -484,3 +484,71 @@ goto L3;
 }
 }
 }
+void GPIOF_Handler(void){
+if(GPIO_PORTF_MIS_R&&0x10 == 0x10){
+GPIO_PORTF_ICR_R = 0x10;
+FlagH=1;
+}
+if(GPIO_PORTF_MIS_R&&0x10 == 0x10){
+GPIO_PORTF_ICR_R = 0x01;
+FlagH=2;
+}
+}
+void GPIOA_Handler(void){
+GPIO_PORTF_DATA_R&=~0x0E;
+GPIO_PORTA_ICR_R = 0x80;
+if(flag2!=1){
+FlagH=1;
+}
+}
+void startMenu(){
+char choice=0;
+lcd_4bits_cmd(0x1);
+lcd_4bits_cmd(0x0C);
+lcd_4bits_cmd(0x80);
+LCD_String("Enter A,B,C orD");
+do{
+choice = get_key();
+delay_milli(10);
+}
+while (choice == 0);
+lcd_4bits_cmd(0x1);
+switch(choice){
+case 'A':
+delay(500);
+popcorn_cooking();
+delay(2000);
+break;
+case 'B':
+delay(500);
+beef_cooking();
+delay(2000);
+break;
+case 'C':
+delay(500);
+chicken_cooking();
+delay(2000);
+break;
+case 'D':
+delay(500);
+other_cooking();
+delay(2000);
+break;
+default:
+LCD_String("Invalid input");
+delay(2000);
+startMenu();
+}
+}
+int main()
+{
+LedsInit();
+sw3_Init();
+sw12_Init();
+Buzzer_Init();
+lcd_init();
+keypad_init ();
+startMenu();
+while(1){
+}
+}

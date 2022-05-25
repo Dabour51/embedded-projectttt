@@ -3,7 +3,7 @@ int chicken_cooking(){
 	char value,weight;
 	int time;
 L2:	LCD_String("Chicken Weight? (1 to 9)");
-		delay_milli(2000);
+		delay(2000);
 	 lcd_4bits_cmd(0x1);
 	 lcd_4bits_cmd(0x80);
 	 while(1){
@@ -14,7 +14,7 @@ L2:	LCD_String("Chicken Weight? (1 to 9)");
 }while(value==0);
 	
     lcd_4bits_data(value);
-		delay_milli(1000);
+		delay(1000);
    lcd_4bits_cmd(0x1);
 		weight = value;
 		 
@@ -29,7 +29,7 @@ L2:	LCD_String("Chicken Weight? (1 to 9)");
  }
 	else {
 			LCD_String("        Err");
-		  delay_milli(2000);
+		  delay(2000);
 	   lcd_4bits_cmd(0x1);
 	   lcd_4bits_cmd(0x80);
 		goto L2;

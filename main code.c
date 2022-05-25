@@ -8,39 +8,39 @@ int main()
   
 	
 L1:	LCD_String("Enter a choice  to begin cooking");
- delay_milli(3000);
+ delay(3000);
 do{
  lcd_4bits_cmd(0x1);
  lcd_4bits_cmd(0x80);
  choice = get_key();
-		 delay_milli(10);
+		 delay(10);
 	}
 	while (choice == 0);
 	while(1){	
 switch(choice){
 case 'A':
-	delay_milli(500);
+	delay(500);
 popcorn_cooking();
-delay_milli(2000);
+delay(2000);
 break;
 case 'B':
-	delay_milli(500);
+	delay(500);
 beef_cooking();
-delay_milli(2000);
+delay(2000);
 break;
 case 'C':
-	delay_milli(500);
+	delay(500);
 chicken_cooking();
-delay_milli(2000);
+delay(2000);
 break;
 case 'D':
 other_cooking();
-delay_milli(3000);
+delay(3000);
 break;
 default:
 {
  LCD_String("Invalid input");
-delay_milli(2000);
+delay(2000);
 lcd_4bits_cmd(0x1);
 lcd_4bits_cmd(0x80);
 goto L1; 

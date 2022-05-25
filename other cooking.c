@@ -4,7 +4,7 @@ int other_cooking(){
 	char time[30];
 	int countdown;
 		LCD_String("Cooking time?   (1 to 30)");
-		delay_milli(1000);
+		delay(1000);
 	 lcd_4bits_cmd(0x1);
 	 lcd_4bits_cmd(0x80);
 	 LCD_String("     ");
@@ -17,12 +17,12 @@ int other_cooking(){
 }while(value==0);
 	if (value != '*'){
 		lcd_4bits_data(value);
-		 delay_milli(500);
+		 delay(500);
 	  time[i] = value;
 	}
 	else {
 		lcd_4bits_cmd(0x1);
-	 delay_milli(100);
+	 delay(100);
 		break;
 
 	}

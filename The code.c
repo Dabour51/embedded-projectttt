@@ -315,3 +315,64 @@ seconds2, maxSeconds;
  }
  startMenu();
  }
+void popcorn_cooking(){
+ lcd_4bits_cmd(0x1);
+ lcd_4bits_cmd(0x80);
+ while(1){
+ LCD_String(" Popcorn");
+ while(sw12_input() & 0x10 != 0x00);
+ lcd_4bits_cmd(0x1);
+ lcd_4bits_cmd(0x80);
+ delay(10);
+ GPIO_PORTF_DATA_R |= 0x11;
+ timer(100);
+ break;
+ }
+ }
+void beef_cooking(){
+ char value,weight;
+ int time,sw12;
+LCD_String("Beef Weight? (1 to 9)");
+ while(1){
+ do{
+ value = get_key();
+}while(value==0);
+ lcd_4bits_cmd(0x1);
+ lcd_4bits_cmd(0x80);
+ if (value > '0' & (value <= '9')){
+ lcd_4bits_data(value);
+ delay(500);
+ weight = value;
+ }
+ else if((value <= '0') | (value > '9')){
+ lcd_4bits_cmd(0x1);
+ delay(100);
+ LCD_String(" Err");
+ delay(2000);
+ lcd_4bits_cmd(0x1);
+ beef_cooking();
+}
+ do{
+ sw12 = sw12_input();
+}while((sw12 == 0x11));
+ if ((sw12 & 0x10) == 0x00 ){
+ lcd_4bits_cmd(0x1);
+ lcd_4bits_cmd(0x80);
+ beef_cooking();
+ }
+ else if ((sw12 & 0x01) == 0x00){
+ lcd_4bits_cmd(0x1);
+ delay(100);
+ weight = weight -48;
+ if((weight >0) && (weight <10) && (weight %2 ==0)){
+time = weight * 50;
+ timer(time);
+ }
+ else if ((weight >0) && (weight <10) && (weight %2 !=0)){
+ time = (weight-1) * 50 + 30;
+ timer(time);
+}
+}
+ break;
+}
+ }

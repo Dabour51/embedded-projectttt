@@ -1,7 +1,4 @@
-int FlagH=0;
-int flag2=0;
-void GPIOF_Handler(void);
-void GPIOA_Handler(void);
+
 
 void GPIOF_Handler(void){
  if(GPIO_PORTF_MIS_R&&0x10 == 0x10){

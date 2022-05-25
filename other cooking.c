@@ -1,35 +1,62 @@
-int other_cooking(){
-	int i;
-	char value; 
-	char time[30];
-	int countdown;
-		LCD_String("Cooking time?   (1 to 30)");
-		delay(1000);
-	 lcd_4bits_cmd(0x1);
-	 lcd_4bits_cmd(0x80);
-	 LCD_String("     ");
-	 while(1){
-	for(i=0;i<20;i++){
-	do{
-	
-		 value = get_key();
-
-}while(value==0);
-	if (value != '*'){
-		lcd_4bits_data(value);
-		 delay(500);
-	  time[i] = value;
-	}
-	else {
-		lcd_4bits_cmd(0x1);
-	 delay(100);
-		break;
-
-	}
+void other_cooking(){
+ int i,sw12;
+ char value;
+ char time[30];
+char cmds[4] ={0xc4,0xc3,0xc1,0xc0};
+ int countdown;
+ L3: LCD_String("Cooking time? ");
+ lcd_4bits_cmd(0xC0);
+ LCD_String("00:00");
+ while(1){
+ for(i=0;i<4;i++){
+ do{
+ delay(200);
+ value = get_key();
+ sw12 = sw12_input();
+}while(value==0 & (sw12 == 0x11));
+ if ((value >='0') && (value <= '9')){
+ lcd_4bits_cmd(cmds[0]);
+ lcd_4bits_data(value);
+ time[i] = value;
+ if(i==1){
+ lcd_4bits_cmd(cmds[i]);
+ lcd_4bits_data(time[i-1]);
+ }
+ if(i==2){
+ lcd_4bits_cmd(cmds[i]);
+ lcd_4bits_data(time[i-2]);
+lcd_4bits_cmd(cmds[i-1]);
+ lcd_4bits_data(time[i-1]);
+ }
+ if(i==3){
+ lcd_4bits_cmd(cmds[i]);
+ lcd_4bits_data(time[i-3]);
+ lcd_4bits_cmd(cmds[i-1]);
+ lcd_4bits_data(time[i-2]);
+lcd_4bits_cmd(cmds[i-2]);
+lcd_4bits_data(time[i-1]);
+ }
+ }
+ else if ((sw12 & 0x10) == 0x00 ){
+ lcd_4bits_cmd(0x1);
+ lcd_4bits_cmd(0x80);
+ goto L3;
+ }
+ else if ((sw12 & 0x01) == 0x00){
+ lcd_4bits_cmd(0x1);
+ delay(100);
+ countdown = atoi(time);
+ timer(countdown);
+ return;
 }
-	countdown = atoi(time);
-	timer(countdown);
-break;
+ else if((value < '0') | (value > '9')){
+ lcd_4bits_cmd(0x1);
+ delay(100);
+ LCD_String(" Err");
+ delay(2000);
+ lcd_4bits_cmd(0x1);
+ goto L3;
 }
-	 return(0);
+}
+ }
 }

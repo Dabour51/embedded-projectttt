@@ -175,3 +175,143 @@ void Buzzer_Init(){ //using port D7
 void Buzzer_sound(){
 GPIO_PORTD_DATA_R =GPIO_PORTD_DATA_R ^ 0x80;// buzzer on or off
 }
+void LedsInit () {
+ SYSCTL_RCGCGPIO_R |= 0x20;
+ while ((SYSCTL_PRGPIO_R & 0x20) == 0);
+ GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;
+ GPIO_PORTF_CR_R |= 0x0E;
+ GPIO_PORTF_AFSEL_R &= ~0x0E;
+ GPIO_PORTF_PCTL_R &= ~0x0000FFF0;
+ GPIO_PORTF_AMSEL_R &= ~0x0E;
+ GPIO_PORTF_DEN_R |= 0x0E;
+ GPIO_PORTF_DIR_R |= 0x0E;
+ GPIO_PORTF_DATA_R &= ~0x0E;
+}
+void blink_led(){
+GPIO_PORTF_DATA_R =GPIO_PORTF_DATA_R ^ 0x0E;// change the light on or off
+}
+void sw12_Init(){
+ SYSCTL_RCGCGPIO_R |= 0x20;
+ while ((SYSCTL_PRGPIO_R & 0x20) == 0);
+ GPIO_PORTF_LOCK_R |= GPIO_LOCK_KEY;
+ GPIO_PORTF_CR_R |= 0x11;
+ GPIO_PORTF_AFSEL_R &= ~0x11;
+ GPIO_PORTF_PCTL_R &= ~0x000F000F;
+ GPIO_PORTF_AMSEL_R &= ~0x11;
+ GPIO_PORTF_DEN_R |= 0x11;
+ GPIO_PORTF_DIR_R &= ~0x11;
+ GPIO_PORTF_PUR_R |= 0X11;
+ GPIO_PORTF_IS_R &= ~0x11;
+ GPIO_PORTF_IBE_R &= ~0x11;
+ GPIO_PORTF_IEV_R &= ~0x11;
+ GPIO_PORTF_ICR_R &= ~0x11;
+ GPIO_PORTF_IM_R |= 0x11;
+ NVIC_EN0_R = (1 << 30);
+ NVIC_PRI7_R = (NVIC_PRI7_R&0xFF00FFFF)|0x00A00000 ;
+}
+void sw3_Init(){//using port A7
+ SYSCTL_RCGCGPIO_R |= 0x01;
+ while((SYSCTL_PRGPIO_R &0x01)==0) ;
+ GPIO_PORTA_DIR_R &= ~0x80;
+ GPIO_PORTA_DEN_R |=0x80;
+ GPIO_PORTA_CR_R |=0x80;
+ GPIO_PORTA_AMSEL_R &= ~0x80;
+ GPIO_PORTA_PCTL_R &= ~0xF0000000;
+ GPIO_PORTA_AFSEL_R &=~0x80;
+ GPIO_PORTA_PDR_R |=0x80;
+ GPIO_PORTA_IS_R &= ~0x80;
+ GPIO_PORTA_IBE_R &= ~0x80;
+ GPIO_PORTA_IEV_R &= ~0x80;
+ GPIO_PORTA_ICR_R &= ~0x80;
+ GPIO_PORTA_IM_R |= 0x80;
+ NVIC_EN0_R = (1 << 0);
+ NVIC_PRI0_R = (NVIC_PRI0_R&0xFFFFFF00)|0x00000040 ;
+}
+unsigned char sw12_input(void){
+ return (GPIO_PORTF_DATA_R & 0x11);
+}
+void timer(int x){
+ int i,minutes, minutes1, minutes2, seconds, seconds1, 
+seconds2, maxSeconds;
+  int res=0;
+ minutes = x / 100;
+ minutes1 = minutes / 10;
+ minutes2 = minutes % 10;
+ seconds = x % 100;
+ seconds1 = seconds / 10;
+ seconds2 = seconds % 10;
+ maxSeconds = minutes*60+seconds;
+ blink_led();
+ for(i=0; i<maxSeconds+1; i++)
+ {
+ L1: if((FlagH==1)){
+ flag2=1;
+ FlagH=0;
+	GPIO_PORTF_DATA_R&=~0x0E;
+ while(1){
+  blink_led();
+	 delay(300);
+ if(FlagH==2) {
+ FlagH=0;
+ flag2=0;
+ GPIO_PORTF_DATA_R&=~0x0E;
+ if((GPIO_PORTA_DATA_R&0x80)==0x80){
+ while(FlagH==0 || ((GPIO_PORTA_DATA_R&0x80)==0x80)){
+  blink_led();
+ delay(300); 
+ }
+ res=1;
+ }
+ flag2=0;
+ if(res != 1){
+ GPIO_PORTF_DATA_R|=0x0E;
+ }
+ else{
+ res=0;
+ goto L1;
+ }
+ break;
+ }
+ if(FlagH==1){ FlagH=0;
+ lcd_4bits_cmd(0x01);
+ GPIO_PORTF_DATA_R&=~0x0E;
+ flag2=0;
+ startMenu();
+ }
+ }
+ }
+ LCD_String(" ");
+ delay(10);
+ lcd_4bits_data(minutes1+48);
+ lcd_4bits_data(minutes2+48);
+ lcd_4bits_data(':');
+ lcd_4bits_data(seconds1+48);
+ lcd_4bits_data(seconds2+48);
+ delay(1000);
+ lcd_4bits_cmd(0x80);
+ seconds2--;
+ if(seconds2==-1)
+ {
+ seconds1--;
+ seconds2=9;
+ }
+ if(seconds1==-1)
+ {
+ minutes2--;
+ seconds1=5;
+ }
+ if(minutes2==-1)
+ {
+ minutes1--;
+ minutes2=9;
+ }
+ }
+ blink_led(); 
+ delay(1000);
+ for(i=0 ; i<6 ; i++){
+ Buzzer_sound();
+ blink_led(); 
+ delay(1000);
+ }
+ startMenu();
+ }
